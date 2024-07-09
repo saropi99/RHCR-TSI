@@ -13,7 +13,7 @@ sudo apt install libboost-all-dev
 After you installed BOOST and downloaded the source code, go into the directory of the source code and compile it with CMake: 
 ```
 cmake .
-make
+make -j4
 ```
 
 Then, you are able to run the code:

@@ -11,7 +11,6 @@ public:
 
 	void simulate(int simulation_time);
 
-
 private:
 	const MTGrid& G;
 

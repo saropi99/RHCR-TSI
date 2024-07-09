@@ -11,3 +11,8 @@ cmake*
 idea.pptx
 ~*
 maps
+lifelong
+Makefile
+CMakeFiles/
+CMakeCache.txt
+

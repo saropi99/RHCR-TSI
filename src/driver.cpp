@@ -2,6 +2,7 @@
 #include "SortingSystem.h"
 #include "OnlineSystem.h"
 #include "BeeSystem.h"
+#include "MTSystem.h" 
 #include "ID.h"
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -256,6 +257,18 @@ int main(int argc, char** argv)
 		output << "Objective: " << system.get_objective() << endl;
 		output.close();
         return 0;
+	}
+	else if (vm["scenario"].as<string>() == "MT")
+	{
+		MTGrid G;
+		if (!G.load_map(vm["map"].as<std::string>()))
+			return -1;
+		MAPFSolver* solver = set_solver(G, vm);
+		MTSystem system(G, *solver);
+		set_parameters(system, vm);
+		G.preprocessing(system.consider_rotation);
+		system.simulate(vm["simulation_time"].as<int>());
+		return 0;
 	}
 	else
 	{

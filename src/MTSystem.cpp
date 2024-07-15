@@ -47,6 +47,11 @@ void MTSystem::initialize_start_locations()
 	}
 }
 
+std::pair<int, int> MTSystem::generate_task() {
+	auto pickup = this->G.random_location(this->rng);
+	auto delivery = this->G.random_location(this->rng);
+	return make_pair(pickup, delivery);
+}
 
 void MTSystem::initialize_goal_locations()
 {
@@ -56,13 +61,30 @@ void MTSystem::initialize_goal_locations()
 	// Goal locations are not necessarily unique
 	for (int k = 0; k < num_of_drives; k++)
 	{
-		auto goal = this->G.random_location(this->rng);
-		goal_locations[k].emplace_back(goal, 0);
+		auto task = generate_task();
+		goal_locations[k].emplace_back(task.first, 0);
+		goal_locations[k].emplace_back(task.second, 0);
 	}
 }
 
 void MTSystem::update_goal_locations()
 {
+	for (int k = 0; k < num_of_drives; k++)
+	{
+		std::pair<int, int> curr(paths[k][timestep].location, timestep);
+		std::pair<int, int> goal = goal_locations[k].empty() ? curr : goal_locations[k].back();
+
+		int min_timesteps = G.get_Manhattan_distance(curr.first, goal.first);
+		min_timesteps = max(min_timesteps, goal.second);
+		while (min_timesteps <= simulation_window) {
+			auto next = generate_task();
+			goal_locations[k].emplace_back(next.first, 0);
+			goal_locations[k].emplace_back(next.second, 0);
+			min_timesteps += G.get_Manhattan_distance(goal.first, next.first);
+			min_timesteps += G.get_Manhattan_distance(next.first, next.second);
+			goal = make_pair(next.second, 0);
+		}
+	}
 }
 
 void MTSystem::simulate(int simulation_time)
@@ -84,12 +106,12 @@ void MTSystem::simulate(int simulation_time)
         auto new_finished_tasks = move();
         std::cout << new_finished_tasks.size() << " tasks have been finished" << std::endl;
 
-        // update tasks
+        // update tasks 
         for(auto task : new_finished_tasks)
         {
             int id, loc, t;
             std::tie(id, loc, t) = task;
-            finished_tasks[id].emplace_back(loc, t);
+			finished_tasks[id].emplace_back(loc, t);
             num_of_tasks++;
             // if (hold_endpoints)
             //     held_endpoints.erase(loc);

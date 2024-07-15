@@ -20,5 +20,6 @@ private:
 	void initialize_start_locations();
 	void initialize_goal_locations();
 	void update_goal_locations();
+	std::pair<int, int> generate_task();
 };
 

@@ -94,3 +94,12 @@ void MTGrid::preprocessing(bool consider_rotation)
 	double runtime = (std::clock() - t) / CLOCKS_PER_SEC;
 	std::cout << "Done! (" << runtime << " s)" << std::endl;
 }
+
+int MTGrid::random_location(std::mt19937& rng) const
+{
+    std::uniform_int_distribution<int> dist(0, cols * rows - 1);
+    int loc = dist(rng);
+    while (types[loc] == "Obstacle")
+        loc = dist(rng);
+    return loc;
+}

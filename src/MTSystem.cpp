@@ -33,10 +33,15 @@ void MTSystem::initialize_start_locations()
 	// Choose random start locations
 	// Any non-obstacle locations can be start locations
 	// Start locations should be unique
+	std::unordered_set<int> used_starts;
 	for (int k = 0; k < num_of_drives; k++)
 	{
+		auto loc = this->G.random_location(this->rng);
+		while(used_starts.count(loc)){
+			loc = this->G.random_location(this->rng);
+		}
         int orientation = consider_rotation ? rand() % 4 : -1;
-        starts[k] = State(0, 0, orientation);
+        starts[k] = State(loc, 0, orientation);
 		paths[k].emplace_back(starts[k]);
 		finished_tasks[k].emplace_back(starts[k].location, 0);
 	}
@@ -51,18 +56,19 @@ void MTSystem::initialize_goal_locations()
 	// Goal locations are not necessarily unique
 	for (int k = 0; k < num_of_drives; k++)
 	{
-		int goal = G.endpoints[rand() % (int)G.endpoints.size()];
+		auto goal = this->G.random_location(this->rng);
 		goal_locations[k].emplace_back(goal, 0);
 	}
 }
 
-void KivaSystem::update_goal_locations()
+void MTSystem::update_goal_locations()
 {
 }
 
 void MTSystem::simulate(int simulation_time)
 {
-    std::cout << "*** Simulating " << seed << " ***" << std::endl;
+    std::cout << "*** Simulating " << this->seed << " ***" << std::endl;
+	this->rng = std::mt19937(this->seed);
     this->simulation_time = simulation_time;
     initialize();
 
@@ -85,8 +91,8 @@ void MTSystem::simulate(int simulation_time)
             std::tie(id, loc, t) = task;
             finished_tasks[id].emplace_back(loc, t);
             num_of_tasks++;
-            if (hold_endpoints)
-                held_endpoints.erase(loc);
+            // if (hold_endpoints)
+            //     held_endpoints.erase(loc);
         }
 
 		if (congested())

@@ -1,6 +1,7 @@
 #pragma once
 #include "BasicSystem.h"
 #include "MTGrid.h"
+#include <random>
 
 class MTSystem :
 	public BasicSystem
@@ -13,6 +14,7 @@ public:
 
 private:
 	const MTGrid& G;
+	std::mt19937 rng;
 
 	void initialize();
 	void initialize_start_locations();

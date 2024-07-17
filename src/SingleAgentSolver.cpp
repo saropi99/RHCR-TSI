@@ -8,8 +8,8 @@ double SingleAgentSolver::compute_h_value(BasicGraph& G, int curr, int goal_id,
     auto goal = goal_location[goal_id].first;
     if(!G.heuristics.contains(goal))
     {
-        cout << "computing heuristic for " << goal << endl;
         G.heuristics[goal] = G.compute_heuristics(goal);
+        cout << "calculated heuristic for " << G.human_readable_loc(goal) << endl;
     }
     double h = G.heuristics.at(goal)[curr];
     goal_id++;

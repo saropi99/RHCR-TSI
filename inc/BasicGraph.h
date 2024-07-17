@@ -39,4 +39,11 @@ public:
     int cols;
     vector<vector<double> > weights; // (directed) weighted 4-neighbor grid
     bool consider_rotation;
+
+    std::string human_readable_loc(int loc) const
+    {
+        int x = loc % cols;
+        int y = loc / cols;
+        return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
+    }
 };

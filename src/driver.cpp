@@ -266,7 +266,7 @@ int main(int argc, char** argv)
 		MAPFSolver* solver = set_solver(G, vm);
 		MTSystem system(G, *solver);
 		set_parameters(system, vm);
-		G.preprocessing(system.consider_rotation);
+		// G.preprocessing(system.consider_rotation);
 		system.simulate(vm["simulation_time"].as<int>());
 		return 0;
 	}

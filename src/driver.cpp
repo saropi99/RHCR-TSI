@@ -30,7 +30,7 @@ void set_parameters(BasicSystem& system, const boost::program_options::variables
 }
 
 
-MAPFSolver* set_solver(const BasicGraph& G, const boost::program_options::variables_map& vm)
+MAPFSolver* set_solver(BasicGraph& G, const boost::program_options::variables_map& vm)
 {
 	string solver_name = vm["single_agent_solver"].as<string>();
 	SingleAgentSolver* path_planner;

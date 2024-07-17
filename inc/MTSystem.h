@@ -7,13 +7,13 @@ class MTSystem :
 	public BasicSystem
 {
 public:
-	MTSystem(const MTGrid& G, MAPFSolver& solver);
+	MTSystem(MTGrid& G, MAPFSolver& solver);
 	~MTSystem();
 
 	void simulate(int simulation_time);
 
 private:
-	const MTGrid& G;
+	MTGrid& G;
 	std::mt19937 rng;
 
 	void initialize();

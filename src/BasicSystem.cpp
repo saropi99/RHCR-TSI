@@ -3,7 +3,7 @@
 #include <boost/tokenizer.hpp>
 
 
-BasicSystem::BasicSystem(const BasicGraph& G, MAPFSolver& solver): G(G), solver(solver), num_of_tasks(0) {}
+BasicSystem::BasicSystem(BasicGraph& G, MAPFSolver& solver): G(G), solver(solver), num_of_tasks(0) {}
 
 BasicSystem::~BasicSystem() {}
 

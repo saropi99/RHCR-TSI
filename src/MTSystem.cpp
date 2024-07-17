@@ -1,6 +1,6 @@
 #include "MTSystem.h"
 
-MTSystem::MTSystem(const MTGrid& G, MAPFSolver& solver): BasicSystem(G, solver), G(G) {}
+MTSystem::MTSystem(MTGrid& G, MAPFSolver& solver): BasicSystem(G, solver), G(G) {}
 
 MTSystem::~MTSystem()
 {

@@ -1,7 +1,7 @@
 #include "SingleAgentSolver.h"
 
 
-double SingleAgentSolver::compute_h_value(const BasicGraph& G, int curr, int goal_id,
+double SingleAgentSolver::compute_h_value(BasicGraph& G, int curr, int goal_id,
                              const vector<pair<int, int> >& goal_location) const
 {
     assert(goal_id < goal_location.size());

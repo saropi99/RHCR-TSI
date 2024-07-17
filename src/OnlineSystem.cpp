@@ -2,7 +2,7 @@
 #include <random>
 
 
-OnlineSystem::OnlineSystem(const OnlineGrid& G, MAPFSolver& solver): BasicSystem(G, solver), G(G) {}
+OnlineSystem::OnlineSystem(OnlineGrid& G, MAPFSolver& solver): BasicSystem(G, solver), G(G) {}
 
 
 OnlineSystem::~OnlineSystem()

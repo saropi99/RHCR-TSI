@@ -56,8 +56,6 @@ std::pair<int, int> MTSystem::generate_task() {
 
 void MTSystem::initialize_goal_locations()
 {
-	if (hold_endpoints || useDummyPaths)
-		return;
 	// Choose random goal locations
 	// Goal locations are not necessarily unique
 	for (int k = 0; k < num_of_drives; k++)
@@ -102,14 +100,15 @@ void MTSystem::simulate(int simulation_time)
         update_start_locations();
         update_goal_locations();
 		assert(starts.size() == goal_locations.size());
-		for(size_t i = 0; i < starts.size(); i++) {
-			std::cout << "Start: " << G.human_readable_loc(starts[i].location) << std::endl;
-			std::cout << "Goals: ";
-			for(auto& goal : goal_locations[i]) {
-				std::cout << G.human_readable_loc(goal.first) << " ";
-			}
-			std::cout << std::endl;
-		}
+		// for(size_t i = 0; i < starts.size(); i++) {
+		// 	std::cout << "Start: " << G.human_readable_loc(starts[i].location) << " @ " << starts[i].timestep << std::endl;
+		// 	std::cout << "Goals: ";
+		// 	for(auto& goal : goal_locations[i]) {
+		// 		std::cout << G.human_readable_loc(goal.first) << " @ " << goal.second << ", ";
+		// 	}
+		// 	std::cout << std::endl;
+		// }
+		std::cout << "solving..." << std::endl;
         solve();
 
         // move drives
@@ -129,8 +128,6 @@ void MTSystem::simulate(int simulation_time)
             std::tie(id, loc, t) = task;
 			finished_tasks[id].emplace_back(loc, t);
             num_of_tasks++;
-            // if (hold_endpoints)
-            //     held_endpoints.erase(loc);
         }
 
 		if (congested())

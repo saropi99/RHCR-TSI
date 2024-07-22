@@ -6,7 +6,7 @@ double SingleAgentSolver::compute_h_value(BasicGraph& G, int curr, int goal_id,
 {
     assert(goal_id < goal_location.size());
     auto goal = goal_location[goal_id].first;
-    if(!G.heuristics.contains(goal))
+    if(!G.heuristics.count(goal))
     {
         std::cout << "calculating heuristic for " << G.human_readable_loc(goal) << "..." << std::flush;
         G.heuristics[goal] = G.compute_heuristics(goal);

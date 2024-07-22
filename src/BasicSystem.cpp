@@ -485,7 +485,7 @@ void BasicSystem::save_results()
     {
         total_tasks += finished_tasks[k].size();
     }
-    output << total_tasks << std::endl;
+    output << "total tasks: " << total_tasks << std::endl;
     for (int k = 0; k < num_of_drives; k++)
     {
         int prev = finished_tasks[k].front().first;

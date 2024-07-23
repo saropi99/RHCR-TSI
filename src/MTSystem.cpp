@@ -50,7 +50,7 @@ void MTSystem::initialize_start_locations()
 std::pair<int, int> MTSystem::generate_task() {
 	auto pickup = this->G.random_location(this->rng);
 	auto delivery = this->G.random_location(this->rng);
-	std::cout << "Generated task: " << G.human_readable_loc(pickup) << " -> " << G.human_readable_loc(delivery) << std::endl;
+	// std::cout << "Generated task: " << G.human_readable_loc(pickup) << " -> " << G.human_readable_loc(delivery) << std::endl;
 	return make_pair(pickup, delivery);
 }
 
@@ -113,13 +113,13 @@ void MTSystem::simulate(int simulation_time)
 
         // move drives
         auto new_finished_tasks = move();
-        std::cout << new_finished_tasks.size() << " tasks have been finished:" << std::endl;
-		for (auto task : new_finished_tasks)
-		{
-			int curr;
-			std::tie(std::ignore, curr, std::ignore) = task;
-			std::cout << G.human_readable_loc(curr) << std::endl;
-		}
+        std::cout << new_finished_tasks.size() << " tasks have been finished" << std::endl;
+		// for (auto task : new_finished_tasks)
+		// {
+		// 	int curr;
+		// 	std::tie(std::ignore, curr, std::ignore) = task;
+		// 	std::cout << G.human_readable_loc(curr) << std::endl;
+		// }
 
         // update tasks 
         for(auto task : new_finished_tasks)

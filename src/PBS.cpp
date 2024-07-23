@@ -679,6 +679,7 @@ bool PBS::run(const vector<State>& starts,
 		{  // timeout
 			solution_cost = -1;
 			solution_found = false;
+            std::cout << "timeout!" << std::endl;
 			break;
 		}
 

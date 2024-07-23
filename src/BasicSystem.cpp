@@ -188,6 +188,7 @@ void BasicSystem::update_start_locations()
 
 void BasicSystem::update_paths(const std::vector<Path*>& MAPF_paths, int max_timestep = INT_MAX)
 {
+    assert(!MAPF_paths.empty());
     for (int k = 0; k < num_of_drives; k++)
     {
         int length = min(max_timestep, (int) MAPF_paths[k]->size());
@@ -207,6 +208,7 @@ void BasicSystem::update_paths(const std::vector<Path*>& MAPF_paths, int max_tim
 
 void BasicSystem::update_paths(const std::vector<Path>& MAPF_paths, int max_timestep = INT_MAX)
 {
+    assert(!MAPF_paths.empty());
     for (int k = 0; k < num_of_drives; k++)
     {
         int length = min(max_timestep, (int) MAPF_paths[k].size());
@@ -480,12 +482,13 @@ void BasicSystem::save_results()
     // tasks
     output.open(outfile + "/tasks.txt", std::ios::out);
     output << num_of_drives << std::endl;
-    int total_tasks = 0;
+    int total_completed_tasks = 0;
     for (int k = 0; k < num_of_drives; k++)
     {
-        total_tasks += finished_tasks[k].size();
+        total_completed_tasks += finished_tasks[k].size();
     }
-    output << "total tasks: " << total_tasks << std::endl;
+    output << "total completed tasks: " << total_completed_tasks << std::endl;
+    std::cout << "total completed tasks: " << total_completed_tasks << std::endl;
     for (int k = 0; k < num_of_drives; k++)
     {
         int prev = finished_tasks[k].front().first;
@@ -675,7 +678,12 @@ void BasicSystem::solve()
 			 }
 			 else
 			 {
-				 lra.resolve_conflicts(solver.solution);
+				 if (solver.solution.empty())
+                 {
+                    std::cout << "solver.solution is empty" << std::endl;
+                    return;
+                 }
+                 lra.resolve_conflicts(solver.solution);
 				 update_paths(lra.solution);
 			 }
 		 }

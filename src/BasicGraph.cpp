@@ -190,6 +190,17 @@ void BasicGraph::save_heuristics_table(std::string fname)
 
 std::vector<double> BasicGraph::compute_heuristics(int root_location)
 {
+    if (true)
+    {
+        std::vector<double> res(this->size(), DBL_MAX);
+        for (size_t i = 0; i < this->size(); i++)
+        {
+            if (types[i] == "Obstacle")
+                continue;
+            res[i] = get_Manhattan_distance(i, root_location);
+        }
+        return res;
+    }
     std::vector<double> res(this->size(), DBL_MAX);
 	fibonacci_heap< StateTimeAStarNode*, compare<StateTimeAStarNode::compare_node> > heap;
     unordered_set< StateTimeAStarNode*, StateTimeAStarNode::Hasher, StateTimeAStarNode::EqNode> nodes;

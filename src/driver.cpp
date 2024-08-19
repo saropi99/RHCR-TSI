@@ -4,6 +4,7 @@
 #include "BeeSystem.h"
 #include "MTSystem.h" 
 #include "ID.h"
+#include "lacam.h"
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
@@ -77,6 +78,10 @@ MAPFSolver* set_solver(BasicGraph& G, const boost::program_options::variables_ma
 	{
 		mapf_solver = new LRAStar(G, *path_planner);
 	}
+	else if (solver_name == "LaCAM")
+	{
+		mapf_solver = new LaCAM(G, *path_planner);
+	}
 	else
 	{
 		cout << "Solver " << solver_name << "does not exist!" << endl;
@@ -109,7 +114,7 @@ int main(int argc, char** argv)
 		("cutoffTime,t", po::value<int>()->default_value(60), "cutoff time (seconds)")
 		("seed,d", po::value<int>(), "random seed")
 		("screen,s", po::value<int>()->default_value(1), "screen option (0: none; 1: results; 2:all)")
-		("solver", po::value<string>()->default_value("PBS"), "solver (LRA, PBS, WHCA, ECBS)")
+		("solver", po::value<string>()->default_value("PBS"), "solver (LRA, PBS, WHCA, ECBS, LaCAM)")
 		("id", po::value<bool>()->default_value(false), "independence detection")
 		("single_agent_solver", po::value<string>()->default_value("SIPP"), "single-agent solver (ASTAR, SIPP)")
 		("lazyP", po::value<bool>()->default_value(false), "use lazy priority")

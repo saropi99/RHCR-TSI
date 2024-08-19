@@ -604,6 +604,11 @@ void BasicSystem::solve()
 			update_paths(lra.solution);
 		}
 	}
+    else if (solver.get_name() == "LaCAM")
+    {
+        assert(solver.run(starts, goal_locations, time_limit));
+        update_paths(solver.solution);
+    }
 	 else // PBS or ECBS
 	 {
 		 //PriorityGraph initial_priorities;

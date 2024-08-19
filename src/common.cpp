@@ -12,7 +12,7 @@ bool validMove(int curr, int next, int map_size, int num_col)
 	return abs(next_x - curr_x) + abs(next_y - curr_y) < 2;
 }
 
-std::ostream& operator<<(std::ostream& os, const Constraint& constraint)
+std::ostream& operator<<(std::ostream& os, const RHCRConstraint& constraint)
 {
 	os << "<" << std::get<0>(constraint) << "," << std::get<1>(constraint) << "," <<
 		std::get<2>(constraint) << "," << std::get<3>(constraint) << "," <<

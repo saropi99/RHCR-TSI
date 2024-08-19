@@ -46,7 +46,7 @@ public:
 
 
     list< tuple<int, Path, double, double> > paths; // <agent_id, path, lower_bound, path_cost>
-    std::list<Constraint> constraints; // constraints imposed to agent_id
+    std::list<RHCRConstraint> constraints; // constraints imposed to agent_id
 
     double g_val;
     double h_val;

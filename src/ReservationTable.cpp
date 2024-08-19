@@ -342,7 +342,7 @@ void ReservationTable::build(const vector<Path>& paths,
 // For ECBS
 void ReservationTable::build(const vector<Path*>& paths,
                             const list< tuple<int, int, int> >& initial_constraints,
-                            const list< Constraint >& hard_constraints, int current_agent)
+                            const list< RHCRConstraint >& hard_constraints, int current_agent)
 {
     clock_t t = std::clock();
     // add hard constraints

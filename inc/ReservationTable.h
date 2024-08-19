@@ -25,7 +25,7 @@ public:
                int current_agent);
     void build(const vector<Path*>& paths,
                const list< tuple<int, int, int> >& initial_constraints,
-               const list< Constraint >& constraints, int current_agent);
+               const list< RHCRConstraint >& constraints, int current_agent);
 	void insertPath2CT(const Path& path); // insert the path to the constraint table
 	void print() const;
     void printCT(size_t location) const;

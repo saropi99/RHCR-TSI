@@ -28,7 +28,7 @@ bool LaCAM::run(const vector<State>& starts,
         goal_index_sequences.push_back(goal_index_sequence);
     }
 
-    auto ins = Instance("maps/fulfillment_large_empty.lacam_map", start_indexes, goal_index_sequences);
+    auto ins = Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     // std::cout << start_indexes << std::endl;
     // for (const auto& goal_sequence : goal_locations)
     // {

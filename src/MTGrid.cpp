@@ -14,13 +14,20 @@ bool MTGrid::load_map(std::string fname)
     this->map_name = fname.substr(0, fname.rfind('.')); // name without extension
 
     std::string line;
-    getline(myfile, line);
-    boost::char_separator<char> sep(",");
-    boost::tokenizer<boost::char_separator<char>> tok(line, sep);
+    getline(myfile, line); // skip "type octile"
+    getline(myfile, line); // height XXX
+    boost::char_separator<char> sep(" ");
+    auto tok = boost::tokenizer(line, sep);
     auto beg = tok.begin();
-    this->cols = atoi(beg->c_str());
     beg++;
     this->rows = atoi(beg->c_str());
+
+    getline(myfile, line); // width XXX
+    tok = boost::tokenizer(line, sep);
+    beg = tok.begin();
+    beg++;
+    this->cols = atoi(beg->c_str());
+
     this->move[0] = 1;
     this->move[1] = -cols;
     this->move[2] = -1;
@@ -28,6 +35,7 @@ bool MTGrid::load_map(std::string fname)
 
     types.resize(rows * cols);
     weights.resize(rows * cols);
+    getline(myfile, line); // skip "map"
     for (int i = 0; i < this->rows; i++)
     {
         getline(myfile, line);

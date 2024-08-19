@@ -15,4 +15,4 @@ lifelong
 Makefile
 CMakeFiles/
 CMakeCache.txt
-
+.vscode/

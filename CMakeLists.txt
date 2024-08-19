@@ -20,6 +20,8 @@ file(GLOB SOURCES "src/*.cpp")
 find_package( Boost 1.49.0 REQUIRED COMPONENTS program_options system filesystem)
 include_directories( ${Boost_INCLUDE_DIRS} )
 
+# Find LaCAM
+add_subdirectory(lacam)
 
 add_executable(lifelong ${SOURCES} )
-target_link_libraries(lifelong ${Boost_LIBRARIES})
+target_link_libraries(lifelong ${Boost_LIBRARIES} lacam)

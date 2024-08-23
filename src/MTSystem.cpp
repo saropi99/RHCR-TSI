@@ -100,26 +100,12 @@ void MTSystem::simulate(int simulation_time)
         update_start_locations();
         update_goal_locations();
 		assert(starts.size() == goal_locations.size());
-		// for(size_t i = 0; i < starts.size(); i++) {
-		// 	std::cout << "Start: " << G.human_readable_loc(starts[i].location) << " @ " << starts[i].timestep << std::endl;
-		// 	std::cout << "Goals: ";
-		// 	for(auto& goal : goal_locations[i]) {
-		// 		std::cout << G.human_readable_loc(goal.first) << " @ " << goal.second << ", ";
-		// 	}
-		// 	std::cout << std::endl;
-		// }
 		std::cout << "solving..." << std::endl;
         solve();
 
         // move drives
         auto new_finished_tasks = move();
         std::cout << new_finished_tasks.size() << " tasks have been finished" << std::endl;
-		// for (auto task : new_finished_tasks)
-		// {
-		// 	int curr;
-		// 	std::tie(std::ignore, curr, std::ignore) = task;
-		// 	std::cout << G.human_readable_loc(curr) << std::endl;
-		// }
 
         // update tasks 
         for(auto task : new_finished_tasks)
@@ -139,5 +125,5 @@ void MTSystem::simulate(int simulation_time)
 
     update_start_locations();
 	std::cout << std::endl << "Done!" << std::endl;
-	save_results();
+	std::cout << "Total number of finished tasks: " << num_of_tasks << std::endl;
 }

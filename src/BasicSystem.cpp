@@ -609,95 +609,95 @@ void BasicSystem::solve()
         assert(solver.run(starts, goal_locations, time_limit));
         update_paths(solver.solution);
     }
-	 else // PBS or ECBS
-	 {
-		 //PriorityGraph initial_priorities;
-		 update_initial_constraints(solver.initial_constraints);
+    else // PBS or ECBS
+    {
+        //PriorityGraph initial_priorities;
+        update_initial_constraints(solver.initial_constraints);
 
-		 // solve
-		 if (hold_endpoints || useDummyPaths)
-		 {
-			 vector<State> new_starts;
-			 vector< vector<pair<int, int> > > new_goal_locations;
-			 for (int i : new_agents)
-			 {
-				 new_starts.emplace_back(starts[i]);
-				 new_goal_locations.emplace_back(goal_locations[i]);
-			 }
-			 vector<Path> planned_paths(num_of_drives);
-			 solver.initial_rt.clear();
-			 auto p = new_agents.begin();
-			 for (int i = 0; i < num_of_drives; i++)
-			 {
-                 planned_paths[i].resize(paths[i].size() - timestep);
-                 for (int t = 0; t < (int)planned_paths[i].size(); t++)
-                 {
-                     planned_paths[i][t] = paths[i][timestep + t];
-                     planned_paths[i][t].timestep = t;
-                 }
-				 if (p == new_agents.end() || *p != i)
-				 {
-					 solver.initial_rt.insertPath2CT(planned_paths[i]);
-				 }
-				 else
-					 ++p;
-			 }
-			 if (!new_agents.empty())
-			 {
-				 bool sol;
-                if (timestep == 0)
-                    sol = solver.run(new_starts, new_goal_locations, 10 * time_limit);
+        // solve
+        if (hold_endpoints || useDummyPaths)
+        {
+            vector<State> new_starts;
+            vector< vector<pair<int, int> > > new_goal_locations;
+            for (int i : new_agents)
+            {
+                new_starts.emplace_back(starts[i]);
+                new_goal_locations.emplace_back(goal_locations[i]);
+            }
+            vector<Path> planned_paths(num_of_drives);
+            solver.initial_rt.clear();
+            auto p = new_agents.begin();
+            for (int i = 0; i < num_of_drives; i++)
+            {
+                planned_paths[i].resize(paths[i].size() - timestep);
+                for (int t = 0; t < (int)planned_paths[i].size(); t++)
+                {
+                    planned_paths[i][t] = paths[i][timestep + t];
+                    planned_paths[i][t].timestep = t;
+                }
+                if (p == new_agents.end() || *p != i)
+                {
+                    solver.initial_rt.insertPath2CT(planned_paths[i]);
+                }
                 else
-                    sol = solver.run(new_starts, new_goal_locations, time_limit);
-                if (sol)
-				 {
-					 auto pt = solver.solution.begin();
-					 for (int i : new_agents)
-					 {
-						 planned_paths[i] = *pt;
-						 ++pt;
-					 }
-					 if (check_collisions(planned_paths))
-					 {
-						 cout << "COLLISIONS!" << endl;
-						 exit(-1);
-					 }
-				 }
-				 else
-				 {
-					 sol = solve_by_WHCA(planned_paths, new_starts, new_goal_locations);
-                     assert(sol);
-				 }
-			 }
-			 // lra.resolve_conflicts(planned_paths, k_robust);
-			 update_paths(planned_paths);
-		 }
-		 else
-		 {
-			 bool sol = solver.run(starts, goal_locations, time_limit);
-			 if (sol)
-			 {
-				 if (log)
-					 solver.save_constraints_in_goal_node(outfile + "/goal_nodes/" + std::to_string(timestep) + ".gv");
-				 update_paths(solver.solution);
-			 }
-			 else
-			 {
-				 if (solver.solution.empty())
-                 {
-                    std::cout << "solver.solution is empty" << std::endl;
-                    return;
-                 }
-                 lra.resolve_conflicts(solver.solution);
-				 update_paths(lra.solution);
-			 }
-		 }
-		 if (log)
-			 solver.save_search_tree(outfile + "/search_trees/" + std::to_string(timestep) + ".gv");
+                    ++p;
+            }
+            if (!new_agents.empty())
+            {
+                bool sol;
+            if (timestep == 0)
+                sol = solver.run(new_starts, new_goal_locations, 10 * time_limit);
+            else
+                sol = solver.run(new_starts, new_goal_locations, time_limit);
+            if (sol)
+                {
+                    auto pt = solver.solution.begin();
+                    for (int i : new_agents)
+                    {
+                        planned_paths[i] = *pt;
+                        ++pt;
+                    }
+                    if (check_collisions(planned_paths))
+                    {
+                        cout << "COLLISIONS!" << endl;
+                        exit(-1);
+                    }
+                }
+                else
+                {
+                    sol = solve_by_WHCA(planned_paths, new_starts, new_goal_locations);
+                    assert(sol);
+                }
+            }
+            // lra.resolve_conflicts(planned_paths, k_robust);
+            update_paths(planned_paths);
+        }
+        else
+        {
+            bool sol = solver.run(starts, goal_locations, time_limit);
+            if (sol)
+            {
+                if (log)
+                    solver.save_constraints_in_goal_node(outfile + "/goal_nodes/" + std::to_string(timestep) + ".gv");
+                update_paths(solver.solution);
+            }
+            else
+            {
+                if (solver.solution.empty())
+                {
+                std::cout << "solver.solution is empty" << std::endl;
+                return;
+                }
+                lra.resolve_conflicts(solver.solution);
+                update_paths(lra.solution);
+            }
+        }
+        if (log)
+            solver.save_search_tree(outfile + "/search_trees/" + std::to_string(timestep) + ".gv");
 
-	 }
-	 solver.save_results(outfile + "/solver.csv", std::to_string(timestep) + "," 
-										+ std::to_string(num_of_drives) + "," + std::to_string(seed));
+    }
+    solver.save_results(outfile + "/solver.csv", std::to_string(timestep) + ","
+                                    + std::to_string(num_of_drives) + "," + std::to_string(seed));
 }
 
 bool BasicSystem::solve_by_WHCA(vector<Path>& planned_paths,

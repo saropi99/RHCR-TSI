@@ -14,18 +14,11 @@ void MTSystem::initialize()
 	goal_locations.resize(num_of_drives);
 	paths.resize(num_of_drives);
 	finished_tasks.resize(num_of_drives);
-	bool succ = load_records(); // continue simulating from the records
-	if (!succ)
-	{
-		timestep = 0;
-		succ = load_locations();
-		if (!succ)
-		{
-			cout << "Randomly generating initial locations" << endl;
-			initialize_start_locations();
-			initialize_goal_locations();
-		}
-	}
+	timestep = 0;
+
+	cout << "Randomly generating initial locations" << endl;
+	initialize_start_locations();
+	initialize_goal_locations();
 }
 
 void MTSystem::initialize_start_locations()
@@ -44,6 +37,7 @@ void MTSystem::initialize_start_locations()
         starts[k] = State(loc, 0, orientation);
 		paths[k].emplace_back(starts[k]);
 		finished_tasks[k].emplace_back(starts[k].location, 0);
+		used_starts.insert(loc);
 	}
 }
 

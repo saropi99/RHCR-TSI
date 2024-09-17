@@ -317,8 +317,9 @@ bool BasicSystem::congested() const
     for (const auto& path : paths)
     {
         int t = 0;
-        while (t < simulation_window && path[timestep].location == path[timestep + t].location &&
-                path[timestep].orientation == path[timestep + t].orientation)
+        while (t < simulation_window && 
+               path[timestep].location == path[timestep + t].location &&
+               path[timestep].orientation == path[timestep + t].orientation)
             t++;
         if (t == simulation_window)
             wait_agents++;

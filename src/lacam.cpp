@@ -34,8 +34,7 @@ bool LaCAM::run(const vector<State>& starts,
     assert(ins.is_valid(1));
     const auto verbosity = 2;
     const auto total_goals = ins.get_total_goals();
-    // const auto threshold = std::max(((int)total_goals * 3) / 4, 1);
-    const auto threshold = total_goals;
+    const auto threshold = std::max(((int)total_goals * 9) / 10, 1);
     std::cout << "threshold: " << threshold << " (total_goals: " << total_goals << ")" << std::endl;
     auto lacam_soln = lacam::solve(ins, threshold, verbosity, nullptr, 0);
     if (lacam::is_feasible_solution(ins, lacam_soln, threshold, verbosity)) {

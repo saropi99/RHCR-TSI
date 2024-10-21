@@ -21,7 +21,7 @@ find_package( Boost 1.49.0 REQUIRED COMPONENTS program_options system filesystem
 include_directories( ${Boost_INCLUDE_DIRS} )
 
 # Find LaCAM
-add_subdirectory(lacam)
+add_subdirectory(lacam3)
 
 add_executable(lifelong ${SOURCES} )
-target_link_libraries(lifelong ${Boost_LIBRARIES} lacam)
+target_link_libraries(lifelong ${Boost_LIBRARIES} lacam3)

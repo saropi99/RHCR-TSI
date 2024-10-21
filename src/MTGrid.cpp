@@ -17,13 +17,13 @@ bool MTGrid::load_map(std::string fname)
     getline(myfile, line); // skip "type octile"
     getline(myfile, line); // height XXX
     boost::char_separator<char> sep(" ");
-    auto tok = boost::tokenizer(line, sep);
+    auto tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
     auto beg = tok.begin();
     beg++;
     this->rows = atoi(beg->c_str());
 
     getline(myfile, line); // width XXX
-    tok = boost::tokenizer(line, sep);
+    tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
     beg = tok.begin();
     beg++;
     this->cols = atoi(beg->c_str());

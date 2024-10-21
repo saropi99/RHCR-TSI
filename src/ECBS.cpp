@@ -48,11 +48,11 @@ void ECBS::update_paths(ECBSNode* curr)
 /*void ECBS::collect_constraints(ECBSNode* curr, int current_agent)
 {
     // extract all constraints on agent_id
-    std::list <RHCRConstraint > constraints;
+    std::list <Constraint > constraints;
     int max_timestep = k_robust + 1;
     while (curr != dummy_start)
     {
-        for (RHCRConstraint c : curr->constraints)
+        for (Constraint c : curr->constraints)
         {
             if (std::get<0>(c) == current_agent)
             {
@@ -78,7 +78,7 @@ void ECBS::update_paths(ECBSNode* curr)
     }
 
 
-    for (RHCRConstraint c : constraints)
+    for (Constraint c : constraints)
     {
         (constraint_table)[std::get<3>(c)].insert(std::make_pair(std::get<1>(c), std::get<2>(c)));
     }
@@ -283,11 +283,11 @@ bool ECBS::find_path(ECBSNode* node, int agent)
     Path path;
 
     // extract all constraints on the agent
-    list<RHCRConstraint> constraints;
+    list<Constraint> constraints;
     ECBSNode* curr = node;
     while (curr != dummy_start)
     {
-        for (RHCRConstraint c : curr->constraints)
+        for (Constraint c : curr->constraints)
         {
             if (disjoint_splitting)
             {
@@ -354,7 +354,7 @@ bool ECBS::find_path(ECBSNode* node, int agent)
 }
 
 
-bool ECBS::validate_path(const Path& path, const list<RHCRConstraint>& constraints) const
+bool ECBS::validate_path(const Path& path, const list<Constraint>& constraints) const
 {
     int a, v1, v2, t;
     bool positive;
@@ -444,7 +444,7 @@ bool ECBS::generate_root_node()
     for (int i = 0; i < num_of_agents; i++)
     {
 		rt.copy(initial_rt);
-        rt.build(paths, initial_constraints, list<RHCRConstraint>(), i);
+        rt.build(paths, initial_constraints, list<Constraint>(), i);
         Path path = path_planner.run(G, starts[i], goal_locations[i], rt);
         /*if (path.empty() && hold_endpoints && goal_locations[i].size() == 1)
         {

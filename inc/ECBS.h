@@ -105,6 +105,6 @@ private:
 
     // validate
     bool validate_solution() const;
-    bool validate_path(const Path& path, const list<RHCRConstraint>& constraints) const;
+    bool validate_path(const Path& path, const list<Constraint>& constraints) const;
 
 };

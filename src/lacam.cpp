@@ -32,7 +32,7 @@ bool LaCAM::run(const vector<State>& starts,
 
     auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));
-    const auto verbosity = 5;
+    const auto verbosity = 2;
     const auto total_goals = ins.get_total_goals();
     const auto threshold = std::max(((int)total_goals * 3) / 4, 1);
     std::cout << "threshold: " << threshold << " (total_goals: " << total_goals << ")" << std::endl;

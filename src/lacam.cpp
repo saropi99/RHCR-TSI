@@ -1,7 +1,5 @@
 #include "lacam.h"
-#include <instance.hpp>
-#include <planner.hpp>
-#include <post_processing.hpp>
+#include <lacam.hpp>
 #include <algorithm>
 
 LaCAM::LaCAM(BasicGraph& G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {}
@@ -29,15 +27,14 @@ bool LaCAM::run(const vector<State>& starts,
         goal_index_sequences.push_back(goal_index_sequence);
     }
 
-    auto ins = Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
+    auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));
     const auto verbosity = 0;
-    const auto allow_following = false;
     const auto total_goals = ins.get_total_goals();
     const auto threshold = std::max(((int)total_goals * 3) / 4, 1);
     std::cout << "threshold: " << threshold << " (total_goals: " << total_goals << ")" << std::endl;
-    auto lacam_soln = solve(ins, verbosity, nullptr, nullptr, threshold, allow_following);
-    if (is_feasible_solution(ins, lacam_soln, verbosity, threshold, allow_following)) {
+    auto lacam_soln = lacam::solve(ins, threshold, verbosity, nullptr, 0);
+    if (lacam::is_feasible_solution(ins, lacam_soln, threshold, verbosity)) {
         solution = std::vector<Path>(N);
         for (size_t t = 0; t < lacam_soln.size(); t++)
         {

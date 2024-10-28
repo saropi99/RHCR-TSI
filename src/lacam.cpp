@@ -27,8 +27,9 @@ bool LaCAM::run(const vector<State>& starts,
         goal_index_sequences.push_back(goal_index_sequence);
     }
 
-    lacam::Planner::FLG_SWAP = false;
     lacam::Planner::FLG_STAR = false;
+    // lacam::Planner::FLG_SCATTER = false;
+    lacam::Planner::PIBT_NUM = 1;
 
     auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));

@@ -28,16 +28,15 @@ bool LaCAM::run(const vector<State>& starts,
     }
 
     lacam::Planner::FLG_STAR = false;
-    // lacam::Planner::FLG_SCATTER = false;
-    lacam::Planner::PIBT_NUM = 1;
+    lacam::Planner::FLG_SCATTER = false;
 
     auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));
-    const auto verbosity = 2;
+    const auto verbosity = 10;
     const auto total_goals = ins.get_total_goals();
     const auto threshold = std::max(((int)total_goals * 9) / 10, 1);
     std::cout << "threshold: " << threshold << " (total_goals: " << total_goals << ")" << std::endl;
-    auto deadline = lacam::Deadline(60 * 60 * 1000);  // 1h
+    auto deadline = lacam::Deadline(10 * 60 * 1000);  // 10min
     auto lacam_soln = lacam::solve(ins, threshold, verbosity, &deadline, 0);
     if (lacam::is_feasible_solution(ins, lacam_soln, threshold, verbosity)) {
         solution = std::vector<Path>(N);

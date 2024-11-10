@@ -4,14 +4,13 @@
 
 LaCAM::LaCAM(BasicGraph& G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {
     lacam::Planner::FLG_STAR = false;
-    lacam::Planner::FLG_MULTI_THREAD = false;
     lacam::Planner::PIBT_NUM = 1;
+    // lacam::Planner::FLG_MULTI_THREAD = false;
     lacam::Planner::FLG_REFINER = false;
     lacam::Planner::FLG_SCATTER = false;
-    lacam::Planner::RANDOM_INSERT_PROB1 = 0.0;
-    lacam::Planner::RANDOM_INSERT_PROB2 = 0.0;
-    lacam::Planner::FLG_RANDOM_INSERT_INIT_NODE = false;
-    lacam::Planner::RECURSIVE_RATE = 0.0;
+    // lacam::Planner::RANDOM_INSERT_PROB1 = 0.0;
+    // lacam::Planner::RANDOM_INSERT_PROB2 = 0.0;
+    // lacam::Planner::FLG_RANDOM_INSERT_INIT_NODE = false;
     lacam::Planner::FLG_ALLOW_FOLLOWING = false;
 }
 

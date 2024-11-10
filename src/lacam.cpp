@@ -28,8 +28,16 @@ bool LaCAM::run(const vector<State>& starts,
     }
 
     lacam::Planner::FLG_STAR = false;
-    // lacam::Planner::FLG_SCATTER = false;
+    lacam::Planner::FLG_MULTI_THREAD = false;
     lacam::Planner::PIBT_NUM = 1;
+    lacam::Planner::FLG_REFINER = false;
+    lacam::Planner::FLG_SCATTER = false;
+    lacam::Planner::RANDOM_INSERT_PROB1 = 0.0;
+    lacam::Planner::RANDOM_INSERT_PROB2 = 0.0;
+    lacam::Planner::FLG_RANDOM_INSERT_INIT_NODE = false;
+    lacam::Planner::RECURSIVE_RATE = 0.0;
+    lacam::Planner::RECURSIVE_TIME_LIMIT = 1000;
+    lacam::Planner::FLG_ALLOW_FOLLOWING = false;
 
     auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));

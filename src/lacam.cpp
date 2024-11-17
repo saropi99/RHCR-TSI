@@ -2,7 +2,17 @@
 #include <lacam.hpp>
 #include <algorithm>
 
-LaCAM::LaCAM(BasicGraph& G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {}
+LaCAM::LaCAM(BasicGraph& G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {
+    lacam::Planner::FLG_STAR = false;
+    lacam::Planner::PIBT_NUM = 1;
+    // lacam::Planner::FLG_MULTI_THREAD = false;
+    lacam::Planner::FLG_REFINER = false;
+    lacam::Planner::FLG_SCATTER = false;
+    // lacam::Planner::RANDOM_INSERT_PROB1 = 0.0;
+    // lacam::Planner::RANDOM_INSERT_PROB2 = 0.0;
+    // lacam::Planner::FLG_RANDOM_INSERT_INIT_NODE = false;
+    lacam::Planner::FLG_ALLOW_FOLLOWING = false;
+}
 
 bool LaCAM::run(const vector<State>& starts,
                 const vector< vector<pair<int, int> > >& goal_locations,
@@ -26,9 +36,6 @@ bool LaCAM::run(const vector<State>& starts,
         }
         goal_index_sequences.push_back(goal_index_sequence);
     }
-
-    lacam::Planner::FLG_STAR = false;
-    lacam::Planner::FLG_SCATTER = false;
 
     auto ins = lacam::Instance(G.map_name + ".map", start_indexes, goal_index_sequences);
     assert(ins.is_valid(1));

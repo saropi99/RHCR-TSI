@@ -36,27 +36,26 @@ bool LaCAM::run(const vector<State>& starts,
     const auto total_goals = ins.get_total_goals();
     const auto threshold = std::max(((int)total_goals * 9) / 10, 1);
     std::cout << "threshold: " << threshold << " (total_goals: " << total_goals << ")" << std::endl;
-    auto deadline = lacam::Deadline(10 * 60 * 1000);  // 10min
+    auto deadline = lacam::Deadline(5 * 60 * 1000);  // 5min
     auto lacam_soln = lacam::solve(ins, threshold, verbosity, &deadline, 0);
-    if (lacam::is_feasible_solution(ins, lacam_soln, threshold, verbosity)) {
-        solution = std::vector<Path>(N);
-        for (size_t t = 0; t < lacam_soln.size(); t++)
-        {
-            for (size_t i = 0; i < N; i++)
-            {
-                auto loc = lacam_soln[t][i];
-                solution[i].push_back(State(loc->index));
-            }
-        }
-
-        runtime = (std::clock() - start) * 1.0  / CLOCKS_PER_SEC;
-        solution_found = true;
-        return true;
-    }
     runtime = (std::clock() - start) * 1.0  / CLOCKS_PER_SEC;
-    solution_cost = -1;
-    solution_found = false;
-    return false;
+    if (!lacam::is_feasible_solution(ins, lacam_soln, threshold, verbosity)) {
+        solution_cost = -1;
+        solution_found = false;
+        return false;
+    }
+
+    solution = std::vector<Path>(N);
+    for (size_t t = 0; t < lacam_soln.size(); t++)
+    {
+        for (size_t i = 0; i < N; i++)
+        {
+            auto loc = lacam_soln[t][i];
+            solution[i].push_back(State(loc->index));
+        }
+    }
+    solution_found = true;
+    return true;
 }
 
 void LaCAM::save_results(const std::string &fileName, const std::string &instanceName) const

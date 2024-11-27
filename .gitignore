@@ -16,3 +16,4 @@ Makefile
 CMakeFiles/
 CMakeCache.txt
 .vscode/
+venv/

@@ -31,6 +31,7 @@ public:
     void copy(const BasicGraph& copy);
     int get_direction(int from, int to) const;
 
+    vector<double> get_heuristic(int root_location);
 	vector<double> compute_heuristics(int root_location); // compute distances from all lacations to the root location
 	bool load_heuristics_table(std::ifstream& myfile);
 	void save_heuristics_table(string fname);

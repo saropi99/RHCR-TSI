@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <boost/tokenizer.hpp>
 
-
 BasicSystem::BasicSystem(BasicGraph& G, MAPFSolver& solver): G(G), solver(solver), num_of_tasks(0) {}
 
 BasicSystem::~BasicSystem() {}
@@ -497,7 +496,7 @@ void BasicSystem::save_results()
         {
             output << task.first << "," << task.second << ",";
             if (task.second != 0)
-                output << G.heuristics.at(task.first)[prev];
+                output << G.get_heuristic(task.first)[prev];
             output << ";";
             prev = task.first;
         }

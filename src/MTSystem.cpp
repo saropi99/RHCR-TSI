@@ -140,4 +140,5 @@ void MTSystem::simulate(int simulation_time)
     update_start_locations();
 	std::cout << std::endl << "Done!" << std::endl;
 	std::cout << "Total number of finished tasks: " << num_of_tasks << std::endl;
+	save_results();
 }

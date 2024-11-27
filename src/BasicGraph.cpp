@@ -188,6 +188,15 @@ void BasicGraph::save_heuristics_table(std::string fname)
 	myfile.close();
 }
 
+std::vector<double> BasicGraph::get_heuristic(int root_location)
+{
+    if(heuristics.find(root_location) == heuristics.end())
+    {
+        heuristics[root_location] = compute_heuristics(root_location);
+    }
+    return heuristics[root_location];
+}
+
 std::vector<double> BasicGraph::compute_heuristics(int root_location)
 {
     if (true)

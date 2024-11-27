@@ -5,6 +5,7 @@ import signal
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional
 
 import yaml
@@ -16,18 +17,23 @@ MAPS_DIR = Path("maps")
 def run_instance(timeout_s: int, instance: Dict[str, Any]) -> Optional[str]:
     proc = None
     try:
-        command = ["timeout", timeout_s, RHCR_BINARY] + [
-            f"--{key}={value}" for key, value in instance.items()
-        ]
-        command = [str(c) for c in command]
-        print(f"Running command: {' '.join(command)}")
-        # proc = subprocess.Popen(
-        #     command,
-        #     preexec_fn=os.setsid,
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.PIPE,
-        # )
-        # return proc.wait()
+        with TemporaryDirectory() as tmpdir:
+            command = ["timeout", timeout_s, RHCR_BINARY, f"--output={tmpdir}"] + [
+                f"--{key}={value}" for key, value in instance.items()
+            ]
+            command = [str(c) for c in command]
+            print(f"Running command: {' '.join(command)}")
+            proc = subprocess.Popen(
+                command,
+                preexec_fn=os.setsid,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            rv = proc.wait()
+            if rv == 0:
+                with open(Path(tmpdir) / "tasks.txt", "r") as f:
+                    return f.readline().split(" ")[-1]
+            return -1
     except subprocess.CalledProcessError as e:
         print(f"Instance failed with error:\n{e.stderr}")
         return None
@@ -50,18 +56,20 @@ def main(*, config_path: Path) -> None:
             for map in config["maps"]:
                 for num_agents in config["num_agents"]:
                     for simulation_window in config["simulation_windows"]:
-                        for seed in config["seeds"]:
-                            instances.append(
-                                {
-                                    "scenario": scenario,
-                                    "solver": solver,
-                                    "map": MAPS_DIR / map,
-                                    "agentNum": num_agents,
-                                    "simulation_window": simulation_window,
-                                    "seed": seed,
-                                    "simulation_time": config["simulation_time"],
-                                }
-                            )
+                        for planning_window in config["planning_windows"]:
+                            for seed in config["seeds"]:
+                                instances.append(
+                                    {
+                                        "scenario": scenario,
+                                        "solver": solver,
+                                        "map": MAPS_DIR / map,
+                                        "agentNum": num_agents,
+                                        "simulation_window": simulation_window,
+                                        "planning_window": planning_window,
+                                        "seed": seed,
+                                        "simulation_time": config["simulation_time"],
+                                    }
+                                )
 
     max_workers = config.get("max_workers", 1)
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
@@ -74,6 +82,8 @@ def main(*, config_path: Path) -> None:
             result = future.result()
             if result:
                 results.append(result)
+    for i in range(len(instances)):
+        print(instances[i], results[i])
 
 
 if __name__ == "__main__":

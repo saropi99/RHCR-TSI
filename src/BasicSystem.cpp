@@ -481,14 +481,13 @@ void BasicSystem::save_results()
 
     // tasks
     output.open(outfile + "/tasks.txt", std::ios::out);
-    output << num_of_drives << std::endl;
     int total_completed_tasks = 0;
     for (int k = 0; k < num_of_drives; k++)
     {
         total_completed_tasks += finished_tasks[k].size();
     }
     output << "total completed tasks: " << total_completed_tasks << std::endl;
-    std::cout << "total completed tasks: " << total_completed_tasks << std::endl;
+    output << num_of_drives << std::endl;
     for (int k = 0; k < num_of_drives; k++)
     {
         int prev = finished_tasks[k].front().first;
@@ -510,13 +509,12 @@ void BasicSystem::save_results()
 
     // paths
     output.open(outfile + "/paths.txt", std::ios::out);
-    output << num_of_drives << std::endl;
-    for (int k = 0; k < num_of_drives; k++)
+    for (int t = 0; t < timestep; t++)
     {
-        for (auto p : paths[k])
+        output << t << ":";
+        for (int k = 0; k < num_of_drives; k++)
         {
-            if (p.timestep <= timestep)
-                output << p << ";";
+            output << G.human_readable_loc(paths[k][t].location) << ",";
         }
         output << std::endl;
     }

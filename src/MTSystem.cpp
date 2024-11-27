@@ -36,7 +36,6 @@ void MTSystem::initialize_start_locations()
         int orientation = consider_rotation ? rand() % 4 : -1;
         starts[k] = State(loc, 0, orientation);
 		paths[k].emplace_back(starts[k]);
-		finished_tasks[k].emplace_back(starts[k].location, 0);
 		used_starts.insert(loc);
 	}
 }
@@ -44,7 +43,6 @@ void MTSystem::initialize_start_locations()
 std::pair<int, int> MTSystem::generate_task() {
 	auto pickup = this->G.random_location(this->rng);
 	auto delivery = this->G.random_location(this->rng);
-	// std::cout << "Generated task: " << G.human_readable_loc(pickup) << " -> " << G.human_readable_loc(delivery) << std::endl;
 	return make_pair(pickup, delivery);
 }
 

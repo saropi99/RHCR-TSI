@@ -1,20 +1,32 @@
 #!/usr/bin/env python3
 import argparse
+import datetime
 import os
 import signal
 import subprocess
+import time
 from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional
 
+import pandas as pd
 import yaml
 
 RHCR_BINARY = Path.cwd() / "lifelong"
 MAPS_DIR = Path("maps")
 
 
-def run_instance(timeout_s: int, instance: Dict[str, Any]) -> Optional[str]:
+@dataclass
+class RHCRResult:
+    config: Dict[str, Any]
+    success: bool
+    completed_tasks: Optional[int]
+    runtime_s: Optional[float]
+
+
+def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
     proc = None
     try:
         with TemporaryDirectory() as tmpdir:
@@ -23,6 +35,7 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> Optional[str]:
             ]
             command = [str(c) for c in command]
             print(f"Running command: {' '.join(command)}")
+            start_time = time.perf_counter()
             proc = subprocess.Popen(
                 command,
                 preexec_fn=os.setsid,
@@ -30,10 +43,12 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> Optional[str]:
                 stderr=subprocess.PIPE,
             )
             rv = proc.wait()
+            runtime_s = time.perf_counter() - start_time
             if rv == 0:
                 with open(Path(tmpdir) / "tasks.txt", "r") as f:
-                    return f.readline().split(" ")[-1]
-            return -1
+                    num_completed = int(f.readlines()[-1].split(" ")[-1].strip())
+                return RHCRResult(instance, True, num_completed, runtime_s)
+            return RHCRResult(instance, False, None, None)
     except subprocess.CalledProcessError as e:
         print(f"Instance failed with error:\n{e.stderr}")
         return None
@@ -77,13 +92,27 @@ def main(*, config_path: Path) -> None:
             executor.submit(run_instance, config["time_limit_sec"], instance)
             for instance in instances
         ]
-        results = []
+        results: List[RHCRResult] = []
         for future in futures:
             result = future.result()
             if result:
                 results.append(result)
-    for i in range(len(instances)):
-        print(instances[i], results[i])
+
+    df = pd.DataFrame(
+        [
+            {
+                **result.config,
+                "completed_tasks": result.completed_tasks,
+                "runtime_s": result.runtime_s,
+            }
+            for result in results
+        ]
+    )
+    root_dir = Path(config["root"])
+    root_dir.mkdir(exist_ok=True, parents=True)
+    results_fname = root_dir / datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S.csv")
+    df.to_csv(results_fname, index=False)
+    print(f"Results saved to {results_fname.resolve()}")
 
 
 if __name__ == "__main__":

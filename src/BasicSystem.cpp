@@ -481,15 +481,11 @@ void BasicSystem::save_results()
 
     // tasks
     output.open(outfile + "/tasks.txt", std::ios::out);
+    output << num_of_drives << std::endl;
     int total_completed_tasks = 0;
     for (int k = 0; k < num_of_drives; k++)
     {
         total_completed_tasks += finished_tasks[k].size();
-    }
-    output << "total completed tasks: " << total_completed_tasks << std::endl;
-    output << num_of_drives << std::endl;
-    for (int k = 0; k < num_of_drives; k++)
-    {
         int prev = finished_tasks[k].front().first;
         for (auto task : finished_tasks[k])
         {
@@ -505,10 +501,24 @@ void BasicSystem::save_results()
         }
         output << std::endl;
     }
+    output << "Total completed tasks: " << total_completed_tasks << std::endl;
     output.close();
 
     // paths
     output.open(outfile + "/paths.txt", std::ios::out);
+    output << num_of_drives << std::endl;
+    for (int k = 0; k < num_of_drives; k++)
+    {
+        for (auto p : paths[k])
+        {
+            if (p.timestep <= timestep)
+                output << p << ";";
+        }
+        output << std::endl;
+    }
+    output.close();
+
+    output.open(outfile + "/paths_lacam_format.txt", std::ios::out);
     for (int t = 0; t < timestep; t++)
     {
         output << t << ":";
@@ -519,6 +529,7 @@ void BasicSystem::save_results()
         output << std::endl;
     }
     output.close();
+
     saving_time = (std::clock() - t) / CLOCKS_PER_SEC;
 	if (screen)
 		std::cout << "Done! (" << saving_time << " s)" << std::endl;

@@ -11,6 +11,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional
 
+import git
 import pandas as pd
 import yaml
 
@@ -62,6 +63,11 @@ def load_config(config_path: Path) -> dict:
         return yaml.safe_load(f)
 
 
+def write_config(config: dict, config_path: Path) -> None:
+    with open(config_path, "w") as f:
+        yaml.dump(config, f, default_flow_style=False)
+
+
 def main(*, config_path: Path) -> None:
     config = load_config(config_path)
 
@@ -108,9 +114,20 @@ def main(*, config_path: Path) -> None:
             for result in results
         ]
     )
-    root_dir = Path(config["root"])
-    root_dir.mkdir(exist_ok=True, parents=True)
-    results_fname = root_dir / datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S.csv")
+    result_dir = Path(config["root"]) / datetime.datetime.now().strftime(
+        "%Y-%m-%dT%H-%M-%S"
+    )
+    result_dir.mkdir(exist_ok=True, parents=True)
+
+    new_config_fname = result_dir / "config.yaml"
+    repo = git.Repo(search_parent_directories=True)
+    config["git_dirty"] = repo.is_dirty()
+    config["git_branch"] = repo.active_branch.name
+    config["git_hash"] = repo.active_branch.commit.hexsha
+    write_config(config, new_config_fname)
+    print(f"Config saved to {new_config_fname.resolve()}")
+
+    results_fname = result_dir / "result.csv"
     df.to_csv(results_fname, index=False)
     print(f"Results saved to {results_fname.resolve()}")
 

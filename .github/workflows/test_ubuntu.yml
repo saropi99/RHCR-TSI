@@ -3,8 +3,18 @@ name: test_ubuntu
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - "inc/**"
+      - "src/**"
+      - ".github/workflows/test_ubuntu.yml"
+      - ".gitmodules"
   pull_request:
     branches: [ "master" ]
+    paths:
+      - "inc/**"
+      - "src/**"
+      - ".github/workflows/test_ubuntu.yml"
+      - ".gitmodules"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)

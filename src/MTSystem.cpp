@@ -16,8 +16,9 @@ void MTSystem::initialize()
 	finished_tasks.resize(num_of_drives);
 	timestep = 0;
 
-	cout << "Randomly generating initial locations" << endl;
+	cout << "Randomly generating starts" << endl;
 	initialize_start_locations();
+	cout << "Randomly generating initial goals" << endl;
 	initialize_goal_locations();
 }
 
@@ -53,10 +54,8 @@ void MTSystem::initialize_goal_locations()
 	for (int k = 0; k < num_of_drives; k++)
 	{
 		auto task = generate_task();
-		auto dist_to_pickup = G.get_Manhattan_distance(starts[k].location, task.first);
-		goal_locations[k].emplace_back(task.first, dist_to_pickup);
-		auto dist_to_delivery = G.get_Manhattan_distance(task.first, task.second);
-		goal_locations[k].emplace_back(task.second, dist_to_delivery);
+		goal_locations[k].emplace_back(task.first, 0);
+		goal_locations[k].emplace_back(task.second, 0);
 	}
 }
 
@@ -64,17 +63,16 @@ void MTSystem::update_goal_locations()
 {
 	for (int k = 0; k < num_of_drives; k++) {
 		const auto number_of_goals = goal_locations[k].size();
-		std::pair<int, int> curr(paths[k][timestep].location, timestep);
+		int curr = paths[k].back().location;
  
-		int earliest_possible_finish = curr.second;
+		int earliest_possible_finish = timestep;
 
 		// recompute estimated finish times for existing goals
-		for (int i = 0; i < goal_locations[k].size(); i++) {
+		for (size_t i = 0; i < goal_locations[k].size(); i++) {
 			auto goal = goal_locations[k][i];
-			auto dist = G.get_Manhattan_distance(curr.first, goal.first);
+			auto dist = G.get_Manhattan_distance(curr, goal.first);
 			earliest_possible_finish += dist;
-			goal_locations[k][i].second = earliest_possible_finish;
-			curr = goal;
+			curr = goal.first;
 		}
 
 		// add new goals until until we have enough to fill the simulation window
@@ -82,15 +80,15 @@ void MTSystem::update_goal_locations()
 			int pickup, delivery;
 			std::tie(pickup, delivery) = generate_task();
 
-			auto dist_to_pickup = G.get_Manhattan_distance(curr.first, pickup);
+			auto dist_to_pickup = G.get_Manhattan_distance(curr, pickup);
 			earliest_possible_finish += dist_to_pickup;
-			goal_locations[k].emplace_back(pickup, timestep + dist_to_pickup);
+			goal_locations[k].emplace_back(pickup, 0);
 
 			auto dist_to_delivery = G.get_Manhattan_distance(pickup, delivery);
 			earliest_possible_finish += dist_to_delivery;
-			goal_locations[k].emplace_back(delivery, goal_locations[k].back().second + dist_to_delivery);
+			goal_locations[k].emplace_back(delivery, 0);
 
-			curr = goal_locations[k].back();
+			curr = delivery;
 		}
 
 		const auto goals_added = goal_locations[k].size() - number_of_goals;

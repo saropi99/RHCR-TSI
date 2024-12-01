@@ -8,6 +8,7 @@ on:
       - "src/**"
       - ".github/workflows/test_ubuntu.yml"
       - ".gitmodules"
+      - "lacam3/**"
   pull_request:
     branches: [ "master" ]
     paths:
@@ -15,6 +16,7 @@ on:
       - "src/**"
       - ".github/workflows/test_ubuntu.yml"
       - ".gitmodules"
+      - "lacam3/**"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)

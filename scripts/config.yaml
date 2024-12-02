@@ -1,5 +1,5 @@
 root: ../data/exp/RHCR/
-max_workers: 8
+max_workers: 26
 time_limit_sec: 14400 # 4 hours
 
 scenarios:

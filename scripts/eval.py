@@ -92,6 +92,7 @@ def main(*, config_path: Path) -> None:
                             )
 
     max_workers = config.get("max_workers", 1)
+    print(f"Running {len(instances)} instances across {max_workers} workers")
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = [
             executor.submit(run_instance, config["time_limit_sec"], instance)

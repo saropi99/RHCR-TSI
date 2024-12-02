@@ -1,6 +1,6 @@
 root: ../data/exp/RHCR/
 max_workers: 8
-time_limit_sec: 7200
+time_limit_sec: 14400 # 4 hours
 
 scenarios:
   - MT
@@ -12,13 +12,17 @@ maps:
 num_agents:
   - 10
   - 100
+  - 500
   - 1000
   - 2000
-  # - 5000
+  - 3000
+  - 4000
+  - 5000
 simulation_windows:
+  - 10
   - 100
-planning_windows:
   - 200
+  - 500
 seeds:
   - 0
   - 1

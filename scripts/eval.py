@@ -77,20 +77,19 @@ def main(*, config_path: Path) -> None:
             for map in config["maps"]:
                 for num_agents in config["num_agents"]:
                     for simulation_window in config["simulation_windows"]:
-                        for planning_window in config["planning_windows"]:
-                            for seed in config["seeds"]:
-                                instances.append(
-                                    {
-                                        "scenario": scenario,
-                                        "solver": solver,
-                                        "map": MAPS_DIR / map,
-                                        "agentNum": num_agents,
-                                        "simulation_window": simulation_window,
-                                        "planning_window": planning_window,
-                                        "seed": seed,
-                                        "simulation_time": config["simulation_time"],
-                                    }
-                                )
+                        for seed in config["seeds"]:
+                            instances.append(
+                                {
+                                    "scenario": scenario,
+                                    "solver": solver,
+                                    "map": MAPS_DIR / map,
+                                    "agentNum": num_agents,
+                                    "simulation_window": simulation_window,
+                                    "planning_window": simulation_window * 2,
+                                    "seed": seed,
+                                    "simulation_time": config["simulation_time"],
+                                }
+                            )
 
     max_workers = config.get("max_workers", 1)
     with ProcessPoolExecutor(max_workers=max_workers) as executor:

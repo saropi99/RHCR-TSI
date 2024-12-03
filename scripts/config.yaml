@@ -2,6 +2,9 @@ root: ../data/exp/RHCR/
 max_workers: 26
 time_limit_sec: 14400 # 4 hours
 
+n_seeds: 10
+simulation_time: 5000
+
 scenarios:
   - MT
 solvers:
@@ -10,8 +13,12 @@ solvers:
 maps:
   - fulfillment_large_empty.map
 num_agents:
+  - 1
   - 10
   - 100
+  - 200
+  - 300
+  - 400
   - 500
   - 1000
   - 2000
@@ -23,10 +30,4 @@ simulation_windows:
   - 100
   - 200
   - 500
-seeds:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
-simulation_time: 5000
+  - 1000

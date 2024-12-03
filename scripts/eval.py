@@ -77,7 +77,7 @@ def main(*, config_path: Path) -> None:
             for map in config["maps"]:
                 for num_agents in config["num_agents"]:
                     for simulation_window in config["simulation_windows"]:
-                        for seed in config["seeds"]:
+                        for seed in range(config["n_seeds"]):
                             instances.append(
                                 {
                                     "scenario": scenario,
@@ -135,4 +135,6 @@ def main(*, config_path: Path) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("config_path", type=str, help="Path to config file")
+    start_time = time.perf_counter()
     main(**vars(parser.parse_args()))
+    print(f"Total experiment runtime: {time.perf_counter() - start_time:.2f}s")

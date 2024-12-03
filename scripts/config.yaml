@@ -12,7 +12,7 @@ solvers:
   - LaCAM
 maps:
   - fulfillment_large_empty.map
-  - fulfillmenet_large.map
+  - fulfillment_large.map
 num_agents:
   - 1
   - 10

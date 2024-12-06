@@ -35,7 +35,10 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
                 f"--{key}={value}" for key, value in instance.items()
             ]
             command = [str(c) for c in command]
-            print(f"Running command: {' '.join(command)}")
+            print(
+                datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S ")
+                + f"Running command: {' '.join(command)}"
+            )
             start_time = time.perf_counter()
             proc = subprocess.Popen(
                 command,

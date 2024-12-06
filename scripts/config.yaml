@@ -1,34 +1,40 @@
 root: ../data/exp/RHCR/
-max_workers: 26
-time_limit_sec: 14400 # 4 hours
+max_workers: 20
+time_limit_sec: 7200 # 2 hours
 
 n_seeds: 10
 simulation_time: 5000
 
-scenarios:
-  - MT
-solvers:
-  - PBS
-  - LaCAM
 maps:
   - fulfillment_large_empty.map
   - fulfillment_large.map
-num_agents:
-  - 1
-  - 10
-  - 100
-  - 200
-  - 300
-  - 400
-  - 500
-  - 1000
-  - 2000
-  - 3000
-  - 4000
-  - 5000
 simulation_windows:
   - 10
   - 100
   - 200
   - 500
   - 1000
+solvers:
+  PBS:
+    num_agents:
+      - 1
+      - 10
+      - 100
+      - 200
+      - 300
+      - 400
+      - 500
+  LaCAM:
+    num_agents:
+      - 1
+      - 10
+      - 100
+      - 200
+      - 300
+      - 400
+      - 500
+      - 1000
+      - 2000
+      - 3000
+      - 4000
+      - 5000

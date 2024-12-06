@@ -68,31 +68,33 @@ def write_config(config: dict, config_path: Path) -> None:
         yaml.dump(config, f, default_flow_style=False)
 
 
-def main(*, config_path: Path) -> None:
+def main(*, config_path: Path, dry_run: bool) -> None:
     config = load_config(config_path)
 
     instances: List[Dict[str, Any]] = []
-    for scenario in config["scenarios"]:
-        for solver in config["solvers"]:
-            for map in config["maps"]:
-                for num_agents in config["num_agents"]:
-                    for simulation_window in config["simulation_windows"]:
-                        for seed in range(config["n_seeds"]):
-                            instances.append(
-                                {
-                                    "scenario": scenario,
-                                    "solver": solver,
-                                    "map": MAPS_DIR / map,
-                                    "agentNum": num_agents,
-                                    "simulation_window": simulation_window,
-                                    "planning_window": simulation_window * 2,
-                                    "seed": seed,
-                                    "simulation_time": config["simulation_time"],
-                                }
-                            )
+
+    for solver_name, solver_info in config["solvers"].items():
+        for map in config["maps"]:
+            for simulation_window in config["simulation_windows"]:
+                for num_agents in solver_info["num_agents"]:
+                    for seed in range(config["n_seeds"]):
+                        instances.append(
+                            {
+                                "scenario": "MT",
+                                "solver": solver_name,
+                                "map": MAPS_DIR / map,
+                                "agentNum": num_agents,
+                                "simulation_window": simulation_window,
+                                "planning_window": simulation_window * 2,
+                                "seed": seed,
+                                "simulation_time": config["simulation_time"],
+                            }
+                        )
 
     max_workers = config.get("max_workers", 1)
     print(f"Running {len(instances)} instances across {max_workers} workers")
+    if dry_run:
+        return
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = [
             executor.submit(run_instance, config["time_limit_sec"], instance)
@@ -135,6 +137,12 @@ def main(*, config_path: Path) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("config_path", type=str, help="Path to config file")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=False,
+        help="Preview number of instances and workers",
+    )
     start_time = time.perf_counter()
     main(**vars(parser.parse_args()))
     print(f"Total experiment runtime: {time.perf_counter() - start_time:.2f}s")

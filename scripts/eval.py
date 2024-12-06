@@ -5,12 +5,13 @@ import os
 import signal
 import subprocess
 import time
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional
 
+import atomics
 import git
 import pandas as pd
 import yaml
@@ -27,7 +28,12 @@ class RHCRResult:
     runtime_s: Optional[float]
 
 
-def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
+def run_instance(
+    timeout_s: int,
+    instance: Dict[str, Any],
+    total_instances: int,
+    execution_counter: atomics.INTEGRAL,
+) -> RHCRResult:
     proc = None
     try:
         with TemporaryDirectory() as tmpdir:
@@ -37,7 +43,7 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
             command = [str(c) for c in command]
             print(
                 datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S ")
-                + f"Running command: {' '.join(command)}"
+                + f"Running command ({execution_counter.fetch_inc() + 1}/{total_instances}): {' '.join(command)}"
             )
             start_time = time.perf_counter()
             proc = subprocess.Popen(
@@ -98,9 +104,16 @@ def main(*, config_path: Path, dry_run: bool) -> None:
     print(f"Running {len(instances)} instances across {max_workers} workers")
     if dry_run:
         return
-    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+    execution_counter = atomics.atomic(width=4, atype=atomics.INT)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [
-            executor.submit(run_instance, config["time_limit_sec"], instance)
+            executor.submit(
+                run_instance,
+                config["time_limit_sec"],
+                instance,
+                len(instances),
+                execution_counter,
+            )
             for instance in instances
         ]
         results: List[RHCRResult] = []

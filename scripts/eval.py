@@ -51,7 +51,7 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
             if rv == 0:
                 with open(Path(tmpdir) / "tasks.txt", "r") as f:
                     num_completed = int(f.readlines()[-1].split(" ")[-1].strip())
-                return RHCRResult(instance, True, num_completed, runtime_s)
+                return RHCRResult(instance, rv, num_completed, runtime_s)
             return RHCRResult(instance, rv, None, None)
     except subprocess.CalledProcessError as e:
         print(f"Instance failed with error:\n{e.stderr}")

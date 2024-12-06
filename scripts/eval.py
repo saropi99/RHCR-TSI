@@ -22,7 +22,7 @@ MAPS_DIR = Path("maps")
 @dataclass
 class RHCRResult:
     config: Dict[str, Any]
-    success: bool
+    return_code: int
     completed_tasks: Optional[int]
     runtime_s: Optional[float]
 
@@ -52,7 +52,7 @@ def run_instance(timeout_s: int, instance: Dict[str, Any]) -> RHCRResult:
                 with open(Path(tmpdir) / "tasks.txt", "r") as f:
                     num_completed = int(f.readlines()[-1].split(" ")[-1].strip())
                 return RHCRResult(instance, True, num_completed, runtime_s)
-            return RHCRResult(instance, False, None, None)
+            return RHCRResult(instance, rv, None, None)
     except subprocess.CalledProcessError as e:
         print(f"Instance failed with error:\n{e.stderr}")
         return None

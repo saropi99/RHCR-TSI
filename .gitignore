@@ -10,7 +10,7 @@ cmake*
 .idea
 idea.pptx
 ~*
-maps
+maps/*.txt
 lifelong
 Makefile
 CMakeFiles/

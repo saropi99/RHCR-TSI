@@ -4,7 +4,7 @@
 
 [RHCR](https://github.com/Jiaoyang-Li/RHCR) modified to support very large environments through the use of a tweaked version of [LaCAM 3](https://github.com/Kei18/lacam3).
 
-This forked repository is only for TSI class purposes for the multiagents understanding
+This forked repository is only for TSI class purposes for multiagents understanding
 
 ## Requirements
 * [boost](https://www.boost.org/)
